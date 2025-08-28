@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using EmployeePayrollAPI.Infrastructure;
 using EmployeePayrollAPI.Models.DTOs;
 using System.Data;
@@ -20,12 +20,11 @@ namespace EmployeePayrollAPI.Repositories
             using var conn = _db.CreateConnection();
             var p = new DynamicParameters();
             p.Add("@EmployeeId", dto.EmployeeId);
-            p.Add("@FromDate", dto.FromDate.Date);
-            p.Add("@ToDate", dto.ToDate.Date);
+            p.Add("@FromDate", dto.FromDate.ToDateTime(TimeOnly.MinValue));
+            p.Add("@ToDate", dto.ToDate.ToDateTime(TimeOnly.MinValue));
+            p.Add("@Reason", dto.Reason ?? "");
 
-           // p.Add("@Reason", dto.Reason);
-
-            return await conn.ExecuteScalarAsync<int>("dbo.usp_LeaveRequest_Apply",
+            return await conn.ExecuteScalarAsync<int>("dbo.usp_Leave_Apply",
                 p, commandType: CommandType.StoredProcedure);       
         }
 
@@ -34,24 +33,64 @@ namespace EmployeePayrollAPI.Repositories
             using var conn = _db.CreateConnection();
             var p = new DynamicParameters();
             p.Add("@LeaveRequestId", dto.LeaveRequestId);
-            p.Add("@NewStatus", dto.Approve ? "Approved" : "Rejected");
+            p.Add("@Status", dto.Approve ? "Approved" : "Rejected");
             p.Add("@ApprovedBy", dto.ApprovedBy);
 
-            var result = await conn.QueryFirstOrDefaultAsync<dynamic>(
-                "dbo.usp_LeaveRequest_Approve", p, commandType: CommandType.StoredProcedure);
-
-            string statusCode = Convert.ToString(result?.StatusCode);
-            string message = Convert.ToString(result?.Message);
-
-            return (statusCode, message);
+            try
+            {
+                await conn.ExecuteAsync("dbo.usp_Leave_Approve", p, commandType: CommandType.StoredProcedure);
+                return ("LeaveApprovedSuccessfully", "Leave request has been processed successfully");
+            }
+            catch (Exception ex)
+            {
+                return ("Error", $"Failed to process leave request: {ex.Message}");
+            }
         }
 
         public async Task<IEnumerable<dynamic>>GetAllAsync(int? employeeId= null)
         {
             using var conn = _db.CreateConnection();
-            var p = new DynamicParameters();
-            p.Add("@EmployeeId", employeeId);
-            return await conn.QueryAsync("dbo.usp_LeaveRequest_GetAll", p, commandType: CommandType.StoredProcedure);
+            
+            string sql;
+            if (employeeId.HasValue)
+            {
+                sql = @"
+                    SELECT 
+                        lr.LeaveRequestId,
+                        lr.EmployeeId,
+                        e.FullName as EmployeeName,
+                        lr.FromDate,
+                        lr.ToDate,
+                        lr.Reason,
+                        lr.Status,
+                        lr.ApprovedBy,
+                        lr.ApprovedDate,
+                        lr.RequestDate
+                    FROM LeaveRequests lr
+                    INNER JOIN Employees e ON lr.EmployeeId = e.EmployeeId
+                    WHERE lr.EmployeeId = @EmployeeId
+                    ORDER BY lr.RequestDate DESC";
+                return await conn.QueryAsync(sql, new { EmployeeId = employeeId });
+            }
+            else
+            {
+                sql = @"
+                    SELECT 
+                        lr.LeaveRequestId,
+                        lr.EmployeeId,
+                        e.FullName as EmployeeName,
+                        lr.FromDate,
+                        lr.ToDate,
+                        lr.Reason,
+                        lr.Status,
+                        lr.ApprovedBy,
+                        lr.ApprovedDate,
+                        lr.RequestDate
+                    FROM LeaveRequests lr
+                    INNER JOIN Employees e ON lr.EmployeeId = e.EmployeeId
+                    ORDER BY lr.RequestDate DESC";
+                return await conn.QueryAsync(sql);
+            }
         }
 
     }

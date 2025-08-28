@@ -1,0 +1,29 @@
+### Test GET Employee By ID - See the Output
+
+# Get Sumit Singh (ID: 2)
+GET https://localhost:7108/api/employees/2
+Accept: application/json
+
+###
+
+# Get Pawan Singh (ID: 3)  
+GET https://localhost:7108/api/employees/3
+Accept: application/json
+
+###
+
+# Get Anshu Singh (ID: 4)
+GET https://localhost:7108/api/employees/4
+Accept: application/json
+
+###
+
+# Get Jane Smith (ID: 5)
+GET https://localhost:7108/api/employees/5
+Accept: application/json
+
+###
+
+# Test non-existent employee (should return 404)
+GET https://localhost:7108/api/employees/999
+Accept: application/json

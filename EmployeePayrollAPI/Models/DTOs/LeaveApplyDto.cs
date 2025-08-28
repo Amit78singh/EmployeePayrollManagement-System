@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace EmployeePayrollAPI.Models.DTOs
 {
@@ -8,14 +8,13 @@ namespace EmployeePayrollAPI.Models.DTOs
         public int EmployeeId { get; set; }
 
         [Required]
-        public  DateTime FromDate{get; set;}
+        public DateOnly FromDate { get; set; }
 
         [Required]
-        public DateTime ToDate{get; set;}
+        public DateOnly ToDate { get; set; }
 
-        //[Required]
-        //[MaxLength(200)]
-        //public string Reason { get; set; }
+        [MaxLength(500)]
+        public string? Reason { get; set; }
 
     }
 }

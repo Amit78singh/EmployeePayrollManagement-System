@@ -1,4 +1,4 @@
-﻿using EmployeePayrollAPI.Models.DTOs;
+using EmployeePayrollAPI.Models.DTOs;
 
 namespace EmployeePayrollAPI.Repositories
 {
@@ -7,6 +7,6 @@ namespace EmployeePayrollAPI.Repositories
         Task CalculateMonthlySalaryAsync(int employeeId, int year, int month);
         Task GenerateMonthlyAsync(PayrollCalculateDto dto);
         Task<dynamic> GetSlipAsync(int employeeId, int year, int month);
-
+        Task<IEnumerable<dynamic>> GetAllPayrollRecordsAsync();
     }
 }

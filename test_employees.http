@@ -1,0 +1,53 @@
+### Test Employee API Endpoints - Complete CRUD Testing
+
+# 1. GET ALL EMPLOYEES ✅ WORKING
+GET https://localhost:7108/api/employees
+Accept: application/json
+
+###
+
+# 2. GET EMPLOYEE BY ID - Test with existing employee
+GET https://localhost:7108/api/employees/2
+Accept: application/json
+
+###
+
+# 3. CREATE NEW EMPLOYEE - Test with your existing departments/roles
+POST https://localhost:7108/api/employees
+Content-Type: application/json
+
+{
+  "fullName": "Test New Employee",
+  "email": "newtest@example.com",
+  "phone": "9999888877",
+  "gender": "F",
+  "joinDate": "2024-08-27",
+  "departmentId": 1,
+  "roleId": 3
+}
+
+###
+
+# 4. UPDATE EXISTING EMPLOYEE - Update Sumit Singh (ID: 2)
+PUT https://localhost:7108/api/employees/2
+Content-Type: application/json
+
+{
+  "fullName": "Sumit Singh Updated",
+  "phone": "7755844999",
+  "gender": "M",
+  "joinDate": "2024-01-15",
+  "departmentId": 2,
+  "roleId": 4,
+  "isActive": true
+}
+
+###
+
+# 5. DELETE EMPLOYEE - Soft delete (Test with newly created employee)
+DELETE https://localhost:7108/api/employees/18
+
+###
+
+# 6. VERIFY DELETE - Check if employee is soft deleted (IsActive = false)
+GET https://localhost:7108/api/employees/18

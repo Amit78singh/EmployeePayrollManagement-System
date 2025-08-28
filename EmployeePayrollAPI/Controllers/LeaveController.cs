@@ -1,4 +1,4 @@
-﻿using EmployeePayrollAPI.Models.DTOs;
+using EmployeePayrollAPI.Models.DTOs;
 using EmployeePayrollAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -43,6 +43,13 @@ namespace EmployeePayrollAPI.Controllers
                 return Ok(new { statusCode, message });
             }
             return BadRequest(new { statusCode, message });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll(int? employeeId)
+        {
+            var result = await _repo.GetAllAsync(employeeId);
+            return Ok(result);
         }
 
         [HttpGet("list")]

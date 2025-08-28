@@ -1,4 +1,4 @@
-﻿using EmployeePayrollAPI.Models.DTOs;
+using EmployeePayrollAPI.Models.DTOs;
 using EmployeePayrollAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +62,43 @@ namespace EmployeePayrollAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while updating employee", error = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Invalid employee ID");
+                
+            try
+            {
+                await _repo.DeleteAsync(id);
+                return Ok(new { message = "Employee deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while deleting employee", error = ex.Message });
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Invalid employee ID");
+                
+            try
+            {
+                var employee = await _repo.GetByIdAsync(id);
+                if (employee == null)
+                    return NotFound(new { message = "Employee not found" });
+                    
+                return Ok(employee);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while fetching employee", error = ex.Message });
             }
         }
     }

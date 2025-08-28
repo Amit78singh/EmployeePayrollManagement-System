@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace EmployeePayrollAPI.Models;
@@ -22,6 +22,8 @@ public partial class Employee
     public int? RoleId { get; set; }
 
     public bool? IsActive { get; set; }
+
+    public decimal? Salary { get; set; }
 
     public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 

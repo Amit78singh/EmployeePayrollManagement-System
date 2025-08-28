@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace EmployeePayrollAPI.Models.DTOs
 {
@@ -8,7 +8,7 @@ namespace EmployeePayrollAPI.Models.DTOs
         public int LeaveRequestId { get; set; }
 
         [Required]
-        public string ApprovedBy { get; set; }
+        public string ApprovedBy { get; set; } = string.Empty;
 
         [Required]
         public bool Approve { get; set; }

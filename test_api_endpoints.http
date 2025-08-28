@@ -1,0 +1,61 @@
+### Test API Endpoints for EmployeePayrollAPI
+
+### 1. Test Authentication
+POST https://localhost:7108/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@company.com",
+  "password": "Admin123!"
+}
+
+### 2. Test Employee Endpoints
+GET https://localhost:7108/api/employees
+Authorization: Bearer {{auth_token}}
+
+### 3. Test Attendance Endpoints
+POST https://localhost:7108/api/attendance/mark
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "employeeId": 1,
+  "attendanceDate": "2024-01-15",
+  "inTime": "09:00:00",
+  "outTime": "17:00:00",
+  "status": "Present"
+}
+
+### 4. Test Payroll Endpoints
+POST https://localhost:7108/api/payroll/CalculateSalary
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "employeeId": 1,
+  "year": 2024,
+  "month": 1,
+  "basicSalary": 50000,
+  "hra": 20000,
+  "da": 10000,
+  "totalLeaves": 2,
+  "workingDays": 22,
+  "presentDays": 20,
+  "leaveDeductions": 2000
+}
+
+### 5. Test Get Payroll Records
+GET https://localhost:7108/api/payroll
+Authorization: Bearer {{auth_token}}
+
+### 6. Test Get Monthly Attendance Summary
+GET https://localhost:7108/api/attendance/summary/1/2024
+Authorization: Bearer {{auth_token}}
+
+### 7. Test Get Employee Attendance
+GET https://localhost:7108/api/attendance/employee/1?month=1&year=2024
+Authorization: Bearer {{auth_token}}
+
+### 8. Test Get Current Month Attendance
+GET https://localhost:7108/api/attendance/current-month
+Authorization: Bearer {{auth_token}}

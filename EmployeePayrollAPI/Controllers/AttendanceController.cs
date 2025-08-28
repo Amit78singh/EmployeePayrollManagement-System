@@ -1,4 +1,4 @@
-﻿using EmployeePayrollAPI.Models.DTOs;
+using EmployeePayrollAPI.Models.DTOs;
 using EmployeePayrollAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -96,6 +96,37 @@ namespace EmployeePayrollAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while fetching monthly attendance", error = ex.Message });
+            }
+        }
+
+        // GET api/attendance/employee/{employeeId}
+        [HttpGet("employee/{employeeId}")]
+        public async Task<IActionResult> GetEmployeeAttendance(int employeeId, [FromQuery] int? month, [FromQuery] int? year)
+        {
+            try
+            {
+                var result = await _attendanceRepo.GetEmployeeAttendanceAsync(employeeId, month, year);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while fetching employee attendance", error = ex.Message });
+            }
+        }
+
+        // GET api/attendance/current-month
+        [HttpGet("current-month")]
+        public async Task<IActionResult> GetCurrentMonthAttendance()
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var result = await _attendanceRepo.GetMonthlyAttendanceAsync(now.Year, now.Month);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while fetching current month attendance", error = ex.Message });
             }
         }
     }

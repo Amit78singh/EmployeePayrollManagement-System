@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using EmployeePayrollAPI.Models;
 using EmployeePayrollAPI.Models.Auth;
@@ -29,7 +29,7 @@ public partial class EmployeeDBContext : IdentityDbContext<AppUser>
 
     public virtual DbSet<Payroll> Payrolls { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; }
+    public new virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<SalaryComponent> SalaryComponents { get; set; }
 

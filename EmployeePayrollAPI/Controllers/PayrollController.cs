@@ -1,4 +1,4 @@
-﻿using EmployeePayrollAPI.Models.DTOs;
+using EmployeePayrollAPI.Models.DTOs;
 using EmployeePayrollAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +42,20 @@ namespace EmployeePayrollAPI.Controllers
 
             await _repo.GenerateMonthlyAsync(dto);
             return Ok(new { message = "Monthly payroll Generated" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var data = await _repo.GetAllPayrollRecordsAsync();
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error fetching payroll records", error = ex.Message });
+            }
         }
 
         [Authorize(Roles = "HR,Admin")]

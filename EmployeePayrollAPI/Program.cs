@@ -14,6 +14,19 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
 // Add services to the container.
 var connectionString = Environment.GetEnvironmentVariable("EMPLOYEE_DB_CONNECTION") ?? 
                       builder.Configuration.GetConnectionString("EmployeeDB");
@@ -108,6 +121,12 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
+// Seed database with default users
+using (var scope = app.Services.CreateScope())
+{
+    await EmployeePayrollAPI.Data.SeedData.InitializeAsync(scope.ServiceProvider);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -118,6 +137,9 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
+
+// Use CORS before authentication and authorization
+app.UseCors("AllowAngular");
 
 app.UseAuthentication();
 app.UseAuthorization();
